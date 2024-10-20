@@ -8,18 +8,16 @@
 import UIKit
 
 
-
-
 class ViewController: UIViewController {
     //MARK: Color
     let colorRedLight = UIColor(red: 255/255, green: 70/255, blue: 17/255, alpha: 0.1)
     let colorGrayLight = UIColor(red: 246/255, green: 246/255, blue: 246/255, alpha: 1)
-    
+
    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+    
         let scrollView = createScrollView()
         let containerView = createContainerView(scrollView: scrollView)
         
@@ -27,21 +25,41 @@ class ViewController: UIViewController {
         let mobileDivider = createMobileDivider(in: containerView, below: topBarOrder)
         let titileDesk = createTitleDesk(in: containerView, below: mobileDivider)
         let ButtonPromocode = createButtonPromocode(in: containerView, below: titileDesk)
-        let promoCode = createPromoCode(in: containerView, below: ButtonPromocode)
-        let promoCode2 = createPromoCode2(in: containerView, below: promoCode)
+        let promoCode1 = createPromoCode(in: containerView, below: ButtonPromocode)
+        let promoCode2 = createPromoCode2(in: containerView, below: promoCode1)
         let promoCode3 = createPromoCode3(in: containerView, below: promoCode2)
         let promoCode4 = createPromoCode4(in: containerView, below: promoCode3)
         let promoCode5 = createPromoCode5(in: containerView, below: promoCode4)
-        let textLabel1 = createTextLabel1(in: containerView, below: promoCode)
+        let textLabel1 = createTextLabel1(in: containerView, below: promoCode1)
         let textLabel2 = createTextLabel2(in: containerView, below: promoCode2)
         let textlabel3 = createTextLabel3(in: containerView, below: promoCode3)
         let textLabel4 = createTextLabel4(in: containerView, below: promoCode4)
         let textLabel5 = createTextLabel5(in: containerView, below: promoCode5)
         let closePromocode = createCloseButtonPromocode(in: containerView, below: promoCode5)
         let summ = createSummTable(in: containerView, below: closePromocode)
+        let swithes = createSwithes(in: containerView, below: promoCode1, below: promoCode2, below: promoCode3, below: promoCode4, below: promoCode5)
+        
         
         setUPtextPromocode(textLabel1: textLabel1, textLabel2: textLabel2, textLabel3: textlabel3, textLabel4: textLabel4, textLabel5: textLabel5)
+        
+        
        }
+    
+    func  totalRecalculate (priceForTwoItemsTotalText: UILabel, totalValueLabel: UILabel) {
+        let totalPriceProduct = order.products.reduce(0) { $0 + $1.price}
+        priceForTwoItemsTotalText.text = "\(totalPriceProduct)"
+        let totalWithDiscount = totalPriceProduct  - (order.baseDiscount ?? 0)
+        totalValueLabel.text = "\(totalWithDiscount)"
+    }
+    
+    func updateTotalPrice(totalValueLabel: UILabel) {
+        let totalPrice = order.products.reduce(0) { $0 + $1.price }
+        let discountAmount = totalPrice * (order.promocodes[0].active ? Double(order.promocodes[0].percent) / 100.0 : 0.0)
+        let discountedPrice = totalPrice - discountAmount
+        
+        totalValueLabel.text = "\(discountedPrice)"
+    }
+ 
     
     func setUPtextPromocode (textLabel1: UILabel, textLabel2: UILabel, textLabel3: UILabel, textLabel4: UILabel, textLabel5: UILabel) {
         textLabel1.text = "\(promo1.title)"
@@ -401,6 +419,7 @@ class ViewController: UIViewController {
         imageInfo.contentMode = .scaleAspectFill
         imageInfo.translatesAutoresizingMaskIntoConstraints = false
         promoCode1.addSubview(imageInfo)
+        
   
         NSLayoutConstraint.activate([
             textLabel1.topAnchor.constraint(equalTo: promoCode1.topAnchor, constant: 16),
@@ -435,6 +454,8 @@ class ViewController: UIViewController {
         imageInfo2.contentMode = .scaleAspectFill
         imageInfo2.translatesAutoresizingMaskIntoConstraints = false
         promoCode2.addSubview(imageInfo2)
+     
+       
   
         NSLayoutConstraint.activate([
             textLabel2.topAnchor.constraint(equalTo: promoCode2.topAnchor, constant: 16),
@@ -445,6 +466,7 @@ class ViewController: UIViewController {
             
             imageInfo2.topAnchor.constraint(equalTo: promoCode2.topAnchor, constant: 17),
             imageInfo2.leftAnchor.constraint(equalTo: imagePercent2.rightAnchor, constant: 1)
+            
         ])
   
         return textLabel2
@@ -477,6 +499,7 @@ class ViewController: UIViewController {
                 imageInfo3.topAnchor.constraint(equalTo: promoCode3.topAnchor, constant: 17),
                 imageInfo3.leftAnchor.constraint(equalTo: imagePercent3.rightAnchor, constant: 1)
                 
+                
             ])
             
         return textLabel3
@@ -508,6 +531,7 @@ class ViewController: UIViewController {
             
             imageInfo4.topAnchor.constraint(equalTo: promoCode4.topAnchor, constant: 17),
             imageInfo4.leftAnchor.constraint(equalTo: imagePercent4.rightAnchor, constant: 1)
+            
         ])
         
         
@@ -530,7 +554,6 @@ class ViewController: UIViewController {
         imageInfo5.contentMode = .scaleAspectFill
         imageInfo5.translatesAutoresizingMaskIntoConstraints = false
         promoCode5.addSubview(imageInfo5)
-        
         NSLayoutConstraint.activate([
             textLabel5.topAnchor.constraint(equalTo: promoCode5.topAnchor, constant: 16),
             textLabel5.leftAnchor.constraint(equalTo: promoCode5.leftAnchor, constant: 16),
@@ -541,7 +564,9 @@ class ViewController: UIViewController {
             
             imageInfo5.topAnchor.constraint(equalTo: promoCode5.topAnchor, constant: 17),
             imageInfo5.leftAnchor.constraint(equalTo: imagePercent5.rightAnchor, constant: 1)
+    
         ])
+        
         
         return textLabel5
     }
@@ -624,6 +649,32 @@ class ViewController: UIViewController {
         termsOfOffer.translatesAutoresizingMaskIntoConstraints = false
         summTable.addSubview(termsOfOffer)
         
+        let priceForTwoItemsTotalText = UILabel()
+        priceForTwoItemsTotalText.text = ""
+        priceForTwoItemsTotalText.textColor = .black
+        priceForTwoItemsTotalText.font = .systemFont(ofSize: 14)
+        priceForTwoItemsTotalText.lineBreakMode = .byWordWrapping
+        priceForTwoItemsTotalText.numberOfLines = 0
+        priceForTwoItemsTotalText.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(priceForTwoItemsTotalText)
+        
+        let discountsTotalText = UILabel()
+        discountsTotalText.text = "0"
+        discountsTotalText.textColor = .black
+        discountsTotalText.font = .systemFont(ofSize: 14)
+        discountsTotalText.lineBreakMode = .byWordWrapping
+        discountsTotalText.numberOfLines = 0
+        discountsTotalText.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(discountsTotalText)
+        
+        let total = UILabel()
+        total.text = ""
+        total.textColor = .black
+        total.font = .systemFont(ofSize: 18)
+        total.lineBreakMode = .byWordWrapping
+        total.numberOfLines = 0
+        total.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(total)
         
         NSLayoutConstraint.activate([
             summTable.topAnchor.constraint(equalTo: closePromocode.bottomAnchor, constant: 24),
@@ -634,6 +685,9 @@ class ViewController: UIViewController {
             
             priceForTwoItems.topAnchor.constraint(equalTo: summTable.topAnchor, constant: 24),
             priceForTwoItems.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32),
+            
+            priceForTwoItemsTotalText.topAnchor.constraint(equalTo: summTable.topAnchor, constant: 24),
+            priceForTwoItemsTotalText.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -32),
             
             discountsText.topAnchor.constraint(equalTo: priceForTwoItems.topAnchor, constant: 30),
             discountsText.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32),
@@ -652,31 +706,121 @@ class ViewController: UIViewController {
             willPlaceAnOrderButton.widthAnchor.constraint(equalToConstant: 345),
             willPlaceAnOrderButton.heightAnchor.constraint(equalToConstant: 54),
             
+            
             termsOfOffer.topAnchor.constraint(equalTo: willPlaceAnOrderButton.bottomAnchor, constant: 16),
             termsOfOffer.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 70),
-            termsOfOffer.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -70)
+            termsOfOffer.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -70),
+            
+            discountsTotalText.topAnchor.constraint(equalTo: priceForTwoItemsTotalText.topAnchor, constant: 30),
+            discountsTotalText.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -32),
+            
+           total.topAnchor.constraint(equalTo: paymentMethodText.topAnchor, constant: 33),
+            total.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -32)
             
             
             
         ])
+        totalRecalculate(priceForTwoItemsTotalText: priceForTwoItemsTotalText, totalValueLabel: total)
+        
+        willPlaceAnOrderButton.addTarget(self, action: #selector(willPlaceAnOrderButtonTepped), for: .touchUpInside)
         
         return summTable
     }
+
+    
+    private func createSwithes(in containerView: UIView, below promoCode1: UIView, below promoCode2: UIView, below promoCode3: UIView, below promoCode4: UIView, below promoCode5: UIView) -> UISwitch {
+        
+        let promocodes1Switch = UISwitch()
+        promocodes1Switch.isOn = false
+        promocodes1Switch.translatesAutoresizingMaskIntoConstraints = false
+        promoCode1.addSubview(promocodes1Switch)
+        let promocodes2Switch2 = UISwitch()
+        promocodes2Switch2.isOn = false
+        promocodes2Switch2.translatesAutoresizingMaskIntoConstraints = false
+        promoCode2.addSubview(promocodes2Switch2)
+        let promocodes3Switch3 = UISwitch()
+        promocodes3Switch3.isOn = false
+        promocodes3Switch3.translatesAutoresizingMaskIntoConstraints = false
+        promoCode3.addSubview(promocodes3Switch3)
+        let promocodes4Switch4 = UISwitch()
+        promocodes4Switch4.isOn = false
+        promocodes4Switch4.translatesAutoresizingMaskIntoConstraints = false
+        promoCode4.addSubview(promocodes4Switch4)
+        let promocodes5Switch5 = UISwitch()
+        promocodes5Switch5.isOn = false
+        promocodes5Switch5.translatesAutoresizingMaskIntoConstraints = false
+        promoCode5.addSubview(promocodes5Switch5)
+        
+        NSLayoutConstraint.activate([
+            promocodes1Switch.topAnchor.constraint(equalTo: promoCode1.topAnchor, constant: 21),
+            promocodes1Switch.rightAnchor.constraint(equalTo: promoCode1.rightAnchor, constant: -20),
+            
+            promocodes2Switch2.topAnchor.constraint(equalTo: promoCode2.topAnchor, constant: 21),
+            promocodes2Switch2.rightAnchor.constraint(equalTo: promoCode2.rightAnchor, constant: -20),
+            
+            promocodes3Switch3.topAnchor.constraint(equalTo: promoCode3.topAnchor, constant: 21),
+            promocodes3Switch3.rightAnchor.constraint(equalTo: promoCode3.rightAnchor, constant: -20),
+            
+            promocodes4Switch4.topAnchor.constraint(equalTo: promoCode4.topAnchor, constant: 21),
+            promocodes4Switch4.rightAnchor.constraint(equalTo: promoCode4.rightAnchor, constant: -20),
+            
+            promocodes5Switch5.topAnchor.constraint(equalTo: promoCode5.topAnchor, constant: 21),
+            promocodes5Switch5.rightAnchor.constraint(equalTo: promoCode5.rightAnchor, constant: -20)
+            
+        ])
+        
+        promocodes1Switch.addTarget(self, action: #selector(promoCode1SwitchToggled(_:)), for: .valueChanged)
+        
+        promocodes2Switch2.addTarget(self, action: #selector(promoCode2SwitchToggled(_:)), for: .valueChanged)
+        
+        promocodes3Switch3.addTarget(self, action: #selector(promoCode3SwitchToggled(_:)), for: .valueChanged)
+        
+        promocodes4Switch4.addTarget(self, action: #selector(promoCode4SwitchToggled(_:)), for: .valueChanged)
+        
+        promocodes5Switch5.addTarget(self, action: #selector(promoCode5SwitchToggled(_:)), for: .valueChanged)
+        
+        return promocodes1Switch
+        
+        
+    }
     
     
+    @objc  func promoCode1SwitchToggled(_ sender: UISwitch) {
+          order.promocodes[0].active = sender.isOn
     
+    }
     
+    @objc func promoCode2SwitchToggled(_ sender: UISwitch) {
+        order.promocodes[1].active = sender.isOn
+        
+    }
     
+    @objc func promoCode3SwitchToggled(_ sender: UISwitch) {
+        order.promocodes[2].active = sender.isOn
+        
+    }
+    
+    @objc func promoCode4SwitchToggled(_ sender: UISwitch) {
+        order.promocodes[3].active = sender.isOn
+        
+    }
+    
+    @objc func promoCode5SwitchToggled(_ sender: UISwitch) {
+        order.promocodes[4].active = sender.isOn
+        
+    }
     
     @objc func promocodeButtonTapped() {
         print("Промокод нажат")
- }
+    }
 
     @objc  func closePromocodeButtonTapped() {
         print ("Промокод скрыт")
     }
 
-    
+    @objc func willPlaceAnOrderButtonTepped() {
+        print ("Заказ оформлен")
+    }
     
     
     

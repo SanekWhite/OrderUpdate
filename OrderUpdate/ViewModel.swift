@@ -25,6 +25,4 @@ let promo5 = Order.Promocode(title: "4300162112534", percent: 5, endDate: nil, i
 
 
 
-func showOrder(order: Order) {
-   
-}
+

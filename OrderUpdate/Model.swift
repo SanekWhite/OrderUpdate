@@ -15,7 +15,7 @@ struct Order {
         let percent: Int
         let endDate: Date?
         let info: String?
-        let active: Bool
+        var active: Bool
 
     }
 
