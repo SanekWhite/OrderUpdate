@@ -599,6 +599,31 @@ class ViewController: UIViewController {
         paymentMethodText.translatesAutoresizingMaskIntoConstraints = false
         summTable.addSubview(paymentMethodText)
         
+        let totalText = UILabel()
+        totalText.text = "Итого"
+        totalText.textColor = .black
+        totalText.font = .systemFont(ofSize: 18)
+        totalText.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(totalText)
+        
+        let willPlaceAnOrderButton = UIButton(type: .system)
+        willPlaceAnOrderButton.setTitle("Оформить заказ", for: .normal)
+        willPlaceAnOrderButton.setTitleColor(.white, for: .normal)
+        willPlaceAnOrderButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        willPlaceAnOrderButton.backgroundColor = .red
+        willPlaceAnOrderButton.layer.cornerRadius = 12
+        willPlaceAnOrderButton.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(willPlaceAnOrderButton)
+        
+        let termsOfOffer = UILabel()
+        termsOfOffer.text = "Нажимая на кнопку Оформить заказ, Вы соглашаетесь с Условиями оферты"
+        termsOfOffer.textColor = .lightGray
+        termsOfOffer.font = .systemFont(ofSize: 12)
+        termsOfOffer.lineBreakMode = .byWordWrapping
+        termsOfOffer.numberOfLines = 0
+        termsOfOffer.translatesAutoresizingMaskIntoConstraints = false
+        summTable.addSubview(termsOfOffer)
+        
         
         NSLayoutConstraint.activate([
             summTable.topAnchor.constraint(equalTo: closePromocode.bottomAnchor, constant: 24),
@@ -617,7 +642,20 @@ class ViewController: UIViewController {
             promocodeText.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32),
             
             paymentMethodText.topAnchor.constraint(equalTo: promocodeText.topAnchor, constant: 30),
-            paymentMethodText.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32)
+            paymentMethodText.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32),
+            
+            totalText.topAnchor.constraint(equalTo: paymentMethodText.topAnchor, constant: 33),
+            totalText.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 32),
+            
+            willPlaceAnOrderButton.centerYAnchor.constraint(equalTo: totalText.bottomAnchor, constant: 40),
+            willPlaceAnOrderButton.centerXAnchor.constraint(equalTo: summTable.centerXAnchor),
+            willPlaceAnOrderButton.widthAnchor.constraint(equalToConstant: 345),
+            willPlaceAnOrderButton.heightAnchor.constraint(equalToConstant: 54),
+            
+            termsOfOffer.topAnchor.constraint(equalTo: willPlaceAnOrderButton.bottomAnchor, constant: 16),
+            termsOfOffer.leftAnchor.constraint(equalTo: summTable.leftAnchor, constant: 70),
+            termsOfOffer.rightAnchor.constraint(equalTo: summTable.rightAnchor, constant: -70)
+            
             
             
         ])
